@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block titulo %}{{ objeto.titulo }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor principal--con-margen">
+    <a href="{% url 'objetos:lista' %}" class="enlace volver">← Volver a objetos</a>
+
+    <article class="detalle">
+        <div class="detalle__imagen">{{ objeto.icono }}</div>
+
+        <div class="detalle__info">
+            <span class="insignia insignia--{{ objeto.tipo }}">
+                {% if objeto.tipo == 'perdido' %}Perdido{% else %}Encontrado{% endif %}
+            </span>
+            <h1>{{ objeto.titulo }}</h1>
+            <p class="detalle__descripcion">{{ objeto.descripcion }}</p>
+
+            <dl class="datos">
+                <div><dt>Categoría</dt><dd>{{ categoria }}</dd></div>
+                <div><dt>Lugar</dt><dd>{{ objeto.lugar }}</dd></div>
+                <div><dt>Fecha</dt><dd>{{ objeto.fecha }}</dd></div>
+                {% if objeto.punto_entrega %}
+                    <div><dt>Dónde está ahora</dt><dd>{{ objeto.punto_entrega }}</dd></div>
+                {% endif %}
+            </dl>
+
+            <div class="aviso-privacidad">
+                🔒 Tus datos de contacto no se publican. La plataforma pondrá en contacto
+                a las dos personas de forma privada.
+            </div>
+
+            <button type="button" class="boton boton--primario" data-contactar>
+                {% if objeto.tipo == 'perdido' %}Yo lo encontré{% else %}Es mío{% endif %}
+            </button>
+        </div>
+    </article>
+</div>
+{% endblock %}

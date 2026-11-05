@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Objetos{% endblock %}
+
+{% block contenido %}
+<section class="portada portada--baja">
+    <h1 class="portada__titulo">Objetos</h1>
+</section>
+
+<div class="contenedor principal--con-margen">
+    <form method="get" class="filtros">
+        <input type="search" name="q" value="{{ filtros.q }}" placeholder="Buscar por nombre, lugar o descripción" class="campo">
+
+        <select name="tipo" class="campo">
+            <option value="">Todos</option>
+            <option value="perdido" {% if filtros.tipo == 'perdido' %}selected{% endif %}>Perdidos</option>
+            <option value="encontrado" {% if filtros.tipo == 'encontrado' %}selected{% endif %}>Encontrados</option>
+        </select>
+
+        <select name="categoria" class="campo">
+            <option value="">Todas las categorías</option>
+            {% for clave, nombre in categorias %}
+                <option value="{{ clave }}" {% if filtros.categoria == clave %}selected{% endif %}>{{ nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="boton boton--primario">Filtrar</button>
+        <a href="{% url 'objetos:lista' %}" class="boton boton--texto">Limpiar</a>
+    </form>
+
+    <p class="resultado-conteo">{{ objetos|length }} resultado{{ objetos|length|pluralize }}</p>
+
+    <div class="tarjetas">
+        {% for objeto in objetos %}
+            {% include 'objetos/_tarjeta.html' %}
+        {% empty %}
+            <div class="vacio">
+                <p>No hay objetos que coincidan con tu búsqueda.</p>
+                <a href="{% url 'objetos:reportar' %}" class="boton boton--primario">Reportar un objeto</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
