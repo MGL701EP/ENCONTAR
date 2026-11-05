@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Encuéntralo{% endblock %} · Uninúñez</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <!-- Barra institucional -->
+    <div class="barra-u">
+        <a href="{% url 'core:inicio' %}" class="contenedor barra-u__contenido">
+            <span class="barra-u__sello">UN</span>
+            <span class="barra-u__texto">
+                <span class="barra-u__nombre">Encuéntralo</span>
+                <span class="barra-u__sub">Uninúñez · Sede Cartagena</span>
+            </span>
+        </a>
+    </div>
+
+    <!-- Menú -->
+    {% with pagina=request.resolver_match.url_name %}
+    <nav class="navegacion">
+        <div class="contenedor navegacion__contenido">
+            <button class="menu-boton" type="button" aria-label="Abrir menú" aria-expanded="false" data-menu-boton>☰</button>
+
+            <div class="menu" data-menu>
+                <a href="{% url 'core:inicio' %}" class="menu__enlace {% if pagina == 'inicio' %}activo{% endif %}">Inicio</a>
+                <a href="{% url 'objetos:lista' %}" class="menu__enlace {% if pagina == 'lista' or pagina == 'detalle' %}activo{% endif %}">Objetos</a>
+                <a href="{% url 'objetos:reportar' %}" class="menu__enlace {% if pagina == 'reportar' %}activo{% endif %}">Reportar</a>
+            </div>
+
+            <a href="{% url 'usuarios:login' %}" class="boton boton--primario boton--sesion">Iniciar sesión</a>
+        </div>
+    </nav>
+    {% endwith %}
+
+    <main class="principal">
+        {% if messages %}
+            <div class="contenedor" style="padding-top: 1.5rem;">
+                {% for mensaje in messages %}
+                    <div class="alerta">{{ mensaje }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block contenido %}{% endblock %}
+    </main>
+
+    <footer class="pie">
+        <div class="contenedor">
+            <p>Encuéntralo · Corporación Universitaria Rafael Núñez, sede Cartagena</p>
+            <p class="pie__equipo">MJ INDUSTRIES · Proyecto integrador 2026</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

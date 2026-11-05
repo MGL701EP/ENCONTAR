@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenido %}
+<section class="portada">
+    <div>
+        <h1 class="portada__titulo">Encuéntralo</h1>
+        <div class="portada__acciones">
+            <a href="{% url 'objetos:lista' %}" class="boton boton--contorno">Buscar objetos</a>
+        </div>
+    </div>
+</section>
+
+<div class="contenedor">
+    <section class="como-usar">
+        <div class="como-usar__accion">
+            <a href="{% url 'objetos:reportar' %}?tipo=perdido" class="boton boton--blanco">Perdí algo</a>
+            <a href="{% url 'objetos:reportar' %}?tipo=encontrado" class="boton boton--blanco">Encontré algo</a>
+        </div>
+        <div>
+            <h2>¿Cómo funciona?</h2>
+            <p>
+                Un solo lugar para reportar lo que perdiste o lo que encontraste en la U,
+                sin publicar tu número de celular en redes sociales.
+            </p>
+            <ol class="pasos-lista">
+                <li><strong>Reporta</strong> el objeto con su categoría, lugar y fecha.</li>
+                <li><strong>Busca</strong> entre los reportes si alguien encontró lo tuyo.</li>
+                <li><strong>Recupera</strong> tu objeto contactando a la otra persona de forma privada.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="seccion">
+        <div class="seccion__titulo">
+            <h2>Reportes recientes</h2>
+            <a href="{% url 'objetos:lista' %}" class="enlace">Ver todos →</a>
+        </div>
+        <div class="tarjetas">
+            {% for objeto in recientes %}
+                {% include 'objetos/_tarjeta.html' %}
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
