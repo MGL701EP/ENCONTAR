@@ -6,7 +6,30 @@
 <div class="contenedor principal--con-margen">
     <div class="formulario-caja formulario-caja--angosta">
         <h1>Iniciar sesión</h1>
-        <p class="subtitulo">Pantalla en construcción.</p>
+        <p class="subtitulo">Ingresa con tu correo institucional para reportar objetos y contactar a otros usuarios.</p>
+
+        <form method="post" class="formulario">
+            {% csrf_token %}
+
+            <label class="grupo">
+                <span>Correo institucional *</span>
+                <input type="email" name="correo" class="campo" placeholder="Tu correo institucional" required autocomplete="email">
+            </label>
+
+            <label class="grupo">
+                <span>Contraseña *</span>
+                <input type="password" name="contrasena" class="campo" placeholder="Tu contraseña" required autocomplete="current-password">
+            </label>
+
+            <div class="formulario__acciones">
+                <a href="{% url 'core:inicio' %}" class="boton boton--texto">Cancelar</a>
+                <button type="submit" class="boton boton--primario">Entrar</button>
+            </div>
+        </form>
+
+        <p class="subtitulo" style="margin-top: 1.2rem;">
+            ¿Eres del personal de Bienestar o portería? Usa la cuenta asignada por la universidad.
+        </p>
     </div>
 </div>
 {% endblock %}
