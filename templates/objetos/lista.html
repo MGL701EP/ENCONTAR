@@ -24,6 +24,12 @@
             {% endfor %}
         </select>
 
+        <select name="sede" class="campo">
+            <option value="">Todas las sedes</option>
+            {% for clave, nombre in sedes %}
+                <option value="{{ clave }}" {% if filtros.sede == clave %}selected{% endif %}>{{ nombre }}</option>
+            {% endfor %}
+        </select>
         <button type="submit" class="boton boton--primario">Filtrar</button>
         <a href="{% url 'objetos:lista' %}" class="boton boton--texto">Limpiar</a>
     </form>

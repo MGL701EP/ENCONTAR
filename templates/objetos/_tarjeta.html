@@ -1,12 +1,18 @@
+
 <article class="tarjeta">
-    <div class="tarjeta__imagen">{{ objeto.icono }}</div>
+    <div class="tarjeta__imagen">
+        {% if objeto.foto_general %}
+            <img src="{{ objeto.foto_general.url }}" alt="Foto de {{ objeto.titulo }}">
+        {% else %}
+            {{ objeto.icono }}
+        {% endif %}
+    </div>
     <div class="tarjeta__cuerpo">
-        <span class="insignia insignia--{{ objeto.tipo }}">
-            {% if objeto.tipo == 'perdido' %}Perdido{% else %}Encontrado{% endif %}
-        </span>
+        <span class="insignia insignia--{{ objeto.tipo }}">{{ objeto.get_tipo_display }}</span>
         <h3 class="tarjeta__titulo">{{ objeto.titulo }}</h3>
         <p class="tarjeta__dato">Lugar: {{ objeto.lugar }}</p>
-        <p class="tarjeta__dato">Fecha: {{ objeto.fecha }}</p>
+        <p class="tarjeta__dato">Sede: {{ objeto.get_sede_display }}</p>
+        <p class="tarjeta__dato">Fecha: {{ objeto.fecha|date:"d/m/Y" }}</p>
         <a href="{% url 'objetos:detalle' objeto.id %}" class="boton boton--primario boton--chico">Ver más</a>
     </div>
 </article>

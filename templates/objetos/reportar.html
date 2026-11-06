@@ -1,82 +1,90 @@
 {% extends 'base.html' %}
 
-{% block titulo %}Reportar objeto{% endblock %}
+{% block titulo %}{% if objeto %}Editar reporte{% else %}Reportar objeto{% endif %}{% endblock %}
 
 {% block contenido %}
 <div class="contenedor principal--con-margen">
     <div class="formulario-caja">
-        <h1>Reportar un objeto</h1>
+        <h1>{% if objeto %}Editar reporte{% else %}Reportar un objeto{% endif %}</h1>
         <p class="subtitulo">Completa los datos. No incluyas tu número de celular: la plataforma se encarga del contacto.</p>
 
-        <form method="post" class="formulario" enctype="multipart/form-data">
+        <form method="post" class="formulario" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
+            {{ form.non_field_errors }}
 
             <fieldset class="selector-tipo">
                 <legend>¿Qué quieres reportar?</legend>
-                <label class="opcion">
-                    <input type="radio" name="tipo" value="perdido" {% if tipo_inicial != 'encontrado' %}checked{% endif %}>
-                    <span>Perdí algo</span>
-                </label>
-                <label class="opcion">
-                    <input type="radio" name="tipo" value="encontrado" {% if tipo_inicial == 'encontrado' %}checked{% endif %}>
-                    <span>Encontré algo</span>
-                </label>
+                {% for radio in form.tipo %}
+                    <label class="opcion">
+                        {{ radio.tag }}
+                        <span>{% if radio.data.value == 'perdido' %}Perdí algo{% else %}Encontré algo{% endif %}</span>
+                    </label>
+                {% endfor %}
             </fieldset>
+            {{ form.tipo.errors }}
 
             <label class="grupo">
                 <span>Nombre del objeto *</span>
-                <input type="text" name="titulo" class="campo" placeholder="Ej.: Audífonos blancos con estuche" required maxlength="100">
+                {{ form.titulo }}
+                {{ form.titulo.errors }}
             </label>
 
             <div class="fila">
                 <label class="grupo">
                     <span>Categoría *</span>
-                    <select name="categoria" class="campo" required>
-                        <option value="">Selecciona…</option>
-                        {% for clave, nombre in categorias %}
-                            <option value="{{ clave }}">{{ nombre }}</option>
-                        {% endfor %}
-                    </select>
+                    {{ form.categoria }}
+                    {{ form.categoria.errors }}
                 </label>
-
                 <label class="grupo">
                     <span>Fecha *</span>
-                    <input type="date" name="fecha" class="campo" required>
+                    {{ form.fecha }}
+                    {{ form.fecha.errors }}
+                </label>
+            </div>
+
+            <div class="fila">
+                <label class="grupo">
+                    <span>Sede *</span>
+                    {{ form.sede }}
+                    {{ form.sede.errors }}
+                </label>
+                <label class="grupo">
+                    <span>Lugar *</span>
+                    {{ form.lugar }}
+                    {{ form.lugar.errors }}
                 </label>
             </div>
 
             <label class="grupo">
-                <span>Lugar *</span>
-                <select name="lugar" class="campo" required>
-                    <option value="">Selecciona…</option>
-                    {% for lugar in lugares %}
-                        <option value="{{ lugar }}">{{ lugar }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-
-            <label class="grupo" data-solo-encontrado>
-                <span>¿Dónde lo dejaste?</span>
-                <select name="punto_entrega" class="campo">
-                    {% for punto in puntos_entrega %}
-                        <option value="{{ punto }}">{{ punto }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-
-            <label class="grupo">
                 <span>Descripción</span>
-                <textarea name="descripcion" class="campo" rows="4" placeholder="Color, marca, detalles que ayuden a reconocerlo"></textarea>
+                {{ form.descripcion }}
+                {{ form.descripcion.errors }}
             </label>
+
+            <div data-solo-encontrado class="formulario">
+                <label class="grupo">
+                    <span>¿Dónde está ahora? *</span>
+                    {{ form.ubicacion_actual }}
+                    {{ form.ubicacion_actual.errors }}
+                </label>
+                <label class="grupo">
+                    <span>Rasgos distintivos (privados)</span>
+                    {{ form.rasgos_distintivos }}
+                    {{ form.rasgos_distintivos.errors }}
+                </label>
+            </div>
 
             <label class="grupo">
                 <span>Foto (opcional)</span>
-                <input type="file" name="foto" class="campo" accept="image/*">
+                {{ form.foto_general }}
+                {{ form.foto_general.errors }}
             </label>
 
             <div class="formulario__acciones">
-                <a href="{% url 'objetos:lista' %}" class="boton boton--texto">Cancelar</a>
-                <button type="submit" class="boton boton--primario">Publicar reporte</button>
+                <a href="{% if objeto %}{% url 'objetos:detalle' objeto.pk %}{% else %}{% url 'objetos:lista' %}{% endif %}" class="boton boton--texto">Cancelar</a>
+                <button type="submit" class="boton boton--primario">
+                    {% if objeto %}Guardar cambios{% else %}Publicar reporte{% endif %}
+                </button>
             </div>
         </form>
     </div>

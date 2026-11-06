@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .datos import LUGARES, PUNTOS_ENTREGA
+from .forms import ReporteForm
 from .models import Reporte, Sede
 
 
@@ -41,15 +41,18 @@ def detalle(request, objeto_id):
 
 
 def reportar(request):
-    """Formulario de reporte (en el paso F se conecta a la base de datos)."""
+    """CREAR: guarda un nuevo reporte en MySQL (RF-02 y RF-03)."""
     if request.method == 'POST':
-        messages.success(request, 'Reporte recibido. (Versión de prueba: aún no se guarda.)')
-        return redirect('objetos:lista')
+        form = ReporteForm(request.POST, request.FILES)
+        if form.is_valid():
+            reporte = form.save(commit=False)
+            if request.user.is_authenticated:
+                reporte.autor = request.user
+            reporte.save()
+            messages.success(request, 'Tu reporte se publicó correctamente.')
+            return redirect('objetos:detalle', objeto_id=reporte.pk)
+        messages.error(request, 'Revisa los campos marcados en rojo.')
+    else:
+        form = ReporteForm(initial={'tipo': request.GET.get('tipo', 'perdido')})
 
-    contexto = {
-        'categorias': Reporte.Categoria.choices,
-        'lugares': LUGARES,
-        'puntos_entrega': PUNTOS_ENTREGA,
-        'tipo_inicial': request.GET.get('tipo', 'perdido'),
-    }
-    return render(request, 'objetos/reportar.html', contexto)
+    return render(request, 'objetos/reportar.html', {'form': form})
