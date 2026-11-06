@@ -414,3 +414,15 @@ a { color: inherit; }
     background: #fbe9e7;
     border-left-color: #c0392b;
 }
+
+/* ---------- Editar / eliminar ---------- */
+.detalle__acciones {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--borde);
+}
+.boton--texto-peligro { color: #c0392b; }
+.boton--peligro { background: #c0392b; color: #fff; }
+.boton--peligro:hover { background: #a93226; }

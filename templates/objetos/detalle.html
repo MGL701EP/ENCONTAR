@@ -41,6 +41,11 @@
             <button type="button" class="boton boton--primario" data-contactar>
                 {% if objeto.es_encontrado %}Es mío{% else %}Yo lo encontré{% endif %}
             </button>
+            
+            <div class="detalle__acciones">
+                <a href="{% url 'objetos:editar' objeto.pk %}" class="boton boton--texto">✏️ Editar</a>
+                <a href="{% url 'objetos:eliminar' objeto.pk %}" class="boton boton--texto boton--texto-peligro">🗑️ Eliminar</a>
+            </div>
         </div>
     </article>
 </div>

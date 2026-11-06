@@ -56,3 +56,32 @@ def reportar(request):
         form = ReporteForm(initial={'tipo': request.GET.get('tipo', 'perdido')})
 
     return render(request, 'objetos/reportar.html', {'form': form})
+
+
+
+def editar(request, objeto_id):
+    """ACTUALIZAR: modifica un reporte existente (RF-11)."""
+    objeto = get_object_or_404(Reporte, pk=objeto_id)
+    if request.method == 'POST':
+        form = ReporteForm(request.POST, request.FILES, instance=objeto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Los cambios se guardaron correctamente.')
+            return redirect('objetos:detalle', objeto_id=objeto.pk)
+        messages.error(request, 'Revisa los campos marcados en rojo.')
+    else:
+        form = ReporteForm(instance=objeto)
+
+    return render(request, 'objetos/reportar.html', {'form': form, 'objeto': objeto})
+
+
+def eliminar(request, objeto_id):
+    """ELIMINAR: pide confirmación antes de borrar el reporte (RF-11)."""
+    objeto = get_object_or_404(Reporte, pk=objeto_id)
+    if request.method == 'POST':
+        titulo = objeto.titulo
+        objeto.delete()
+        messages.success(request, f'El reporte "{titulo}" se eliminó.')
+        return redirect('objetos:lista')
+
+    return render(request, 'objetos/confirmar_eliminar.html', {'objeto': objeto})
