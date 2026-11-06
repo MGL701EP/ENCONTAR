@@ -259,7 +259,7 @@ a { color: inherit; }
 /* ---------- Filtros ---------- */
 .filtros {
     display: grid;
-    grid-template-columns: 2fr 1fr 1.3fr auto auto;
+    grid-template-columns: 2fr 1fr 1.3fr 1.3fr auto auto;
     gap: 0.7rem;
     padding: 1rem;
     border: 1px solid var(--borde);
@@ -401,3 +401,28 @@ a { color: inherit; }
     .filtros { grid-template-columns: 1fr; }
     .formulario-caja { padding: 1.4rem; }
 }
+
+/* ---------- Errores de formulario ---------- */
+.errorlist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: #c0392b;
+    font-size: 0.88rem;
+}
+.alerta--error {
+    background: #fbe9e7;
+    border-left-color: #c0392b;
+}
+
+/* ---------- Editar / eliminar ---------- */
+.detalle__acciones {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--borde);
+}
+.boton--texto-peligro { color: #c0392b; }
+.boton--peligro { background: #c0392b; color: #fff; }
+.boton--peligro:hover { background: #a93226; }

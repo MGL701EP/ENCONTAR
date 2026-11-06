@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Eliminar reporte{% endblock %}
+
+{% block contenido %}
+<div class="contenedor principal--con-margen">
+    <div class="formulario-caja formulario-caja--angosta">
+        <h1>¿Eliminar este reporte?</h1>
+        <p class="subtitulo">
+            Vas a eliminar <strong>{{ objeto.titulo }}</strong>
+            ({{ objeto.get_tipo_display|lower }} en {{ objeto.lugar }}, {{ objeto.get_sede_display }}).
+            Esta acción no se puede deshacer.
+        </p>
+
+        <form method="post" class="formulario__acciones">
+            {% csrf_token %}
+            <a href="{% url 'objetos:detalle' objeto.pk %}" class="boton boton--texto">Cancelar</a>
+            <button type="submit" class="boton boton--peligro">Sí, eliminar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

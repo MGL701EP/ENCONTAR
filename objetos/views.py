@@ -1,71 +1,87 @@
 from django.contrib import messages
-from django.http import Http404
-from django.shortcuts import redirect, render
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .datos import (
-    CATEGORIAS,
-    LUGARES,
-    OBJETOS,
-    PUNTOS_ENTREGA,
-    buscar_objeto,
-    nombre_categoria,
-)
+from .forms import ReporteForm
+from .models import Reporte, Sede
 
 
 def lista(request):
-    """Listado de objetos con filtros por texto, tipo y categoría."""
+    """Listado de reportes guardados en MySQL, con búsqueda y filtros (RF-04)."""
     texto = request.GET.get('q', '').strip()
     tipo = request.GET.get('tipo', '')
     categoria = request.GET.get('categoria', '')
+    sede = request.GET.get('sede', '')
 
-    resultados = OBJETOS
+    reportes = Reporte.objects.filter(visible=True)
     if texto:
-        t = texto.lower()
-        resultados = [
-            o for o in resultados
-            if t in o['titulo'].lower() or t in o['descripcion'].lower() or t in o['lugar'].lower()
-        ]
+        reportes = reportes.filter(
+            Q(titulo__icontains=texto) | Q(descripcion__icontains=texto) | Q(lugar__icontains=texto)
+        )
     if tipo:
-        resultados = [o for o in resultados if o['tipo'] == tipo]
+        reportes = reportes.filter(tipo=tipo)
     if categoria:
-        resultados = [o for o in resultados if o['categoria'] == categoria]
+        reportes = reportes.filter(categoria=categoria)
+    if sede:
+        reportes = reportes.filter(sede=sede)
 
     contexto = {
-        'objetos': resultados,
-        'categorias': CATEGORIAS,
-        'filtros': {'q': texto, 'tipo': tipo, 'categoria': categoria},
+        'objetos': reportes,
+        'categorias': Reporte.Categoria.choices,
+        'sedes': Sede.choices,
+        'filtros': {'q': texto, 'tipo': tipo, 'categoria': categoria, 'sede': sede},
     }
     return render(request, 'objetos/lista.html', contexto)
 
 
 def detalle(request, objeto_id):
-    """Detalle de un objeto reportado."""
-    objeto = buscar_objeto(objeto_id)
-    if objeto is None:
-        raise Http404('Objeto no encontrado')
-
-    contexto = {
-        'objeto': objeto,
-        'categoria': nombre_categoria(objeto['categoria']),
-    }
-    return render(request, 'objetos/detalle.html', contexto)
+    """Detalle de un reporte. Si no existe o está oculto, muestra error 404."""
+    objeto = get_object_or_404(Reporte, pk=objeto_id, visible=True)
+    return render(request, 'objetos/detalle.html', {'objeto': objeto})
 
 
 def reportar(request):
-    """Formulario para reportar un objeto perdido o encontrado.
-    En esta primera entrega el reporte todavía no se guarda.
-    """
+    """CREAR: guarda un nuevo reporte en MySQL (RF-02 y RF-03)."""
     if request.method == 'POST':
-        messages.success(
-            request,
-            'Reporte recibido. (Versión de prueba: aún no se guarda en la base de datos.)',
-        )
+        form = ReporteForm(request.POST, request.FILES)
+        if form.is_valid():
+            reporte = form.save(commit=False)
+            if request.user.is_authenticated:
+                reporte.autor = request.user
+            reporte.save()
+            messages.success(request, 'Tu reporte se publicó correctamente.')
+            return redirect('objetos:detalle', objeto_id=reporte.pk)
+        messages.error(request, 'Revisa los campos marcados en rojo.')
+    else:
+        form = ReporteForm(initial={'tipo': request.GET.get('tipo', 'perdido')})
+
+    return render(request, 'objetos/reportar.html', {'form': form})
+
+
+
+def editar(request, objeto_id):
+    """ACTUALIZAR: modifica un reporte existente (RF-11)."""
+    objeto = get_object_or_404(Reporte, pk=objeto_id)
+    if request.method == 'POST':
+        form = ReporteForm(request.POST, request.FILES, instance=objeto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Los cambios se guardaron correctamente.')
+            return redirect('objetos:detalle', objeto_id=objeto.pk)
+        messages.error(request, 'Revisa los campos marcados en rojo.')
+    else:
+        form = ReporteForm(instance=objeto)
+
+    return render(request, 'objetos/reportar.html', {'form': form, 'objeto': objeto})
+
+
+def eliminar(request, objeto_id):
+    """ELIMINAR: pide confirmación antes de borrar el reporte (RF-11)."""
+    objeto = get_object_or_404(Reporte, pk=objeto_id)
+    if request.method == 'POST':
+        titulo = objeto.titulo
+        objeto.delete()
+        messages.success(request, f'El reporte "{titulo}" se eliminó.')
         return redirect('objetos:lista')
 
-    contexto = {
-        'categorias': CATEGORIAS,
-        'lugares': LUGARES,
-        'puntos_entrega': PUNTOS_ENTREGA,
-        'tipo_inicial': request.GET.get('tipo', 'perdido'),
-    }
-    return render(request, 'objetos/reportar.html', contexto)
+    return render(request, 'objetos/confirmar_eliminar.html', {'objeto': objeto})
