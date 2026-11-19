@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'usuarios.context_processors.roles',
             ],
         },
     },
@@ -144,3 +145,11 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# Inicio de sesión (RF-01) y sesión de 30 minutos (RNF-04)
+LOGIN_URL = 'usuarios:login'
+LOGIN_REDIRECT_URL = 'core:inicio'
+LOGOUT_REDIRECT_URL = 'core:inicio'
+SESSION_COOKIE_AGE = 30 * 60
+SESSION_SAVE_EVERY_REQUEST = True
+DOMINIO_INSTITUCIONAL = '@campusuninunez.edu.co'
