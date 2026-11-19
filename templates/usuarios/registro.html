@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Crear cuenta{% endblock %}
+
+{% block contenido %}
+<div class="contenedor principal--con-margen">
+    <div class="formulario-caja formulario-caja--angosta">
+        <h1>Crear cuenta</h1>
+        <p class="subtitulo">Solo se aceptan correos institucionales de la universidad. Tu correo nunca se muestra a otros usuarios.</p>
+
+        <form method="post" class="formulario" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <label class="grupo">
+                <span>Correo institucional *</span>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </label>
+
+            <label class="grupo">
+                <span>Contraseña *</span>
+                {{ form.password1 }}
+                {{ form.password1.errors }}
+            </label>
+
+            <label class="grupo">
+                <span>Repite la contraseña *</span>
+                {{ form.password2 }}
+                {{ form.password2.errors }}
+            </label>
+
+            <p class="ayuda">Mínimo 8 caracteres; no puede ser solo números ni parecerse a tu correo.</p>
+
+            <div class="formulario__acciones">
+                <a href="{% url 'usuarios:login' %}" class="boton boton--texto">Ya tengo cuenta</a>
+                <button type="submit" class="boton boton--primario">Crear cuenta</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

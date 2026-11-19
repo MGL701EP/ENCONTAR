@@ -34,7 +34,15 @@
                 <a href="{% url 'objetos:reportar' %}" class="menu__enlace {% if pagina == 'reportar' %}activo{% endif %}">Reportar</a>
             </div>
 
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'usuarios:logout' %}" class="sesion">
+                {% csrf_token %}
+                <span class="sesion__usuario">{% if es_bienestar %}Bienestar · {% endif %}{{ user.email|default:user.username }}</span>
+                <button type="submit" class="boton boton--primario boton--sesion">Cerrar sesión</button>
+            </form>
+        {% else %}
             <a href="{% url 'usuarios:login' %}" class="boton boton--primario boton--sesion">Iniciar sesión</a>
+        {% endif %}
         </div>
     </nav>
     {% endwith %}

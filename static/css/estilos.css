@@ -426,3 +426,12 @@ a { color: inherit; }
 .boton--texto-peligro { color: #c0392b; }
 .boton--peligro { background: #c0392b; color: #fff; }
 .boton--peligro:hover { background: #a93226; }
+
+/* ---------- Sesión ---------- */
+.sesion { display: flex; align-items: center; gap: 0.8rem; margin: 0; }
+.sesion__usuario { font-size: 0.85rem; color: var(--texto-suave); }
+.ayuda { font-size: 0.85rem; color: var(--texto-suave); margin: 0; }
+
+@media (max-width: 760px) {
+    .sesion__usuario { display: none; }
+}
