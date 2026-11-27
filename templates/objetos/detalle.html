@@ -40,10 +40,14 @@
 
             {% if objeto.estado == 'devuelto' %}
                 <p class="alerta alerta--success">Este caso está resuelto: el objeto ya volvió a su dueño.</p>
+            {% elif objeto.es_encontrado %}
+                {% if ya_reclamo %}
+                    <p class="alerta">Tu reclamación está en revisión. Bienestar Universitario te avisará por correo.</p>
+                {% elif puede_reclamar %}
+                    <a href="{% url 'reclamaciones:nueva' objeto.pk %}" class="boton boton--primario">Es mío: reclamarlo</a>
+                {% endif %}
             {% else %}
-                <button type="button" class="boton boton--primario" data-contactar>
-                    {% if objeto.es_encontrado %}Es mío{% else %}Yo lo encontré{% endif %}
-                </button>
+                <button type="button" class="boton boton--primario" data-contactar>Yo lo encontré</button>
             {% endif %}
             
             {% if puede_gestionar %}

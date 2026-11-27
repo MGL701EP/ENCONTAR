@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('objetos/', include('objetos.urls')),
     path('usuarios/', include('usuarios.urls')),
+    path('reclamaciones/', include('reclamaciones.urls')),
 ]
 
 # En desarrollo, Django sirve las fotos subidas por los usuarios

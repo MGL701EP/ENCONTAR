@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Reclamaciones{% endblock %}
+
+{% block contenido %}
+<div class="contenedor principal--con-margen">
+    <div class="encabezado-pagina">
+        <h1>Reclamaciones</h1>
+    </div>
+
+    <div class="filtros-estado">
+        {% for valor, nombre in estados %}
+            <a href="?estado={{ valor }}" class="boton boton--chico {% if estado_actual == valor %}boton--primario{% else %}boton--texto{% endif %}">{{ nombre }}</a>
+        {% endfor %}
+        <a href="?estado=todas" class="boton boton--chico {% if not estado_actual %}boton--primario{% else %}boton--texto{% endif %}">Todas</a>
+    </div>
+
+    <p class="resultado-conteo">{{ reclamaciones|length }} reclamaci{{ reclamaciones|length|pluralize:"ón,ones" }}</p>
+
+    {% if reclamaciones %}
+    <div class="tabla-caja">
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Objeto</th>
+                    <th>Sede</th>
+                    <th>Reclamante</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reclamacion in reclamaciones %}
+                <tr>
+                    <td>{{ reclamacion.reporte.titulo }}</td>
+                    <td>{{ reclamacion.reporte.get_sede_display }}</td>
+                    <td>{{ reclamacion.reclamante.email|default:reclamacion.reclamante.username }}</td>
+                    <td>{{ reclamacion.fecha|date:"d/m/Y H:i" }}</td>
+                    <td><span class="estado estado--{{ reclamacion.estado }}">{{ reclamacion.get_estado_display }}</span></td>
+                    <td><a href="{% url 'reclamaciones:revisar' reclamacion.pk %}" class="enlace">Revisar</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="vacio">
+            <p>No hay reclamaciones en este estado.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

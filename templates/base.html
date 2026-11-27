@@ -23,17 +23,22 @@
     </div>
 
     <!-- Menú -->
-    {% with pagina=request.resolver_match.url_name %}
+    {% with pagina=request.resolver_match.url_name app=request.resolver_match.app_name %}
     <nav class="navegacion">
         <div class="contenedor navegacion__contenido">
             <button class="menu-boton" type="button" aria-label="Abrir menú" aria-expanded="false" data-menu-boton>☰</button>
 
             <div class="menu" data-menu>
                 <a href="{% url 'core:inicio' %}" class="menu__enlace {% if pagina == 'inicio' %}activo{% endif %}">Inicio</a>
-                <a href="{% url 'objetos:lista' %}" class="menu__enlace {% if pagina == 'lista' or pagina == 'detalle' %}activo{% endif %}">Objetos</a>
+                <a href="{% url 'objetos:lista' %}" class="menu__enlace {% if app == 'objetos' and pagina == 'lista' or app == 'objetos' and pagina == 'detalle' %}activo{% endif %}">Objetos</a>
                 <a href="{% url 'objetos:reportar' %}" class="menu__enlace {% if pagina == 'reportar' %}activo{% endif %}">Reportar</a>
              {% if user.is_authenticated %}
                 <a href="{% url 'objetos:mis_reportes' %}" class="menu__enlace {% if pagina == 'mis_reportes' %}activo{% endif %}">Mis reportes</a>
+              {% endif %}
+              {% if es_bienestar %}
+                <a href="{% url 'reclamaciones:lista' %}" class="menu__enlace {% if app == 'reclamaciones' %}activo{% endif %}">
+                    Reclamaciones{% if reclamaciones_pendientes %} <span class="contador">{{ reclamaciones_pendientes }}</span>{% endif %}
+                </a>
               {% endif %}
             </div>
 

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Reclamar objeto{% endblock %}
+
+{% block contenido %}
+<div class="contenedor principal--con-margen">
+    <a href="{% url 'objetos:detalle' objeto.pk %}" class="enlace volver">Volver al objeto</a>
+
+    <div class="formulario-caja">
+        <h1>Reclamar: {{ objeto.titulo }}</h1>
+        <p class="subtitulo">
+            {{ objeto.get_categoria_display }} encontrado en {{ objeto.lugar }}, {{ objeto.get_sede_display }},
+            el {{ objeto.fecha|date:"d/m/Y" }}.
+        </p>
+
+        <div class="aviso-privacidad">
+            Describe el objeto sin ver sus rasgos distintivos: Bienestar Universitario comparará tu
+            descripción con los datos que registró quien lo encontró. Al entregarlo puede pedirte una
+            prueba, por ejemplo desbloquear el celular.
+        </div>
+
+        <form method="post" class="formulario" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <label class="grupo">
+                <span>Descripción a ciegas *</span>
+                {{ form.descripcion_ciegas }}
+                {{ form.descripcion_ciegas.errors }}
+            </label>
+
+            <label class="grupo">
+                <span>Mi reporte de pérdida (opcional)</span>
+                {{ form.reporte_perdida }}
+                {{ form.reporte_perdida.errors }}
+            </label>
+
+            <label class="grupo">
+                <span>Foto previa con el objeto (opcional)</span>
+                {{ form.foto_previa }}
+                {{ form.foto_previa.errors }}
+            </label>
+
+            <div class="formulario__acciones">
+                <a href="{% url 'objetos:detalle' objeto.pk %}" class="boton boton--texto">Cancelar</a>
+                <button type="submit" class="boton boton--primario">Enviar reclamación</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

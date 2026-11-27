@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Revisar reclamación{% endblock %}
+
+{% block contenido %}
+<div class="contenedor principal--con-margen">
+    <a href="{% url 'reclamaciones:lista' %}" class="enlace volver">Volver a reclamaciones</a>
+
+    <div class="encabezado-pagina">
+        <h1>Reclamación de {{ objeto.titulo }}</h1>
+        <span class="estado estado--{{ reclamacion.estado }}">{{ reclamacion.get_estado_display }}</span>
+    </div>
+
+    <dl class="datos">
+        <div><dt>Reclamante</dt><dd>{{ reclamacion.reclamante.email|default:reclamacion.reclamante.username }}</dd></div>
+        <div><dt>Fecha de la reclamación</dt><dd>{{ reclamacion.fecha|date:"d/m/Y H:i" }}</dd></div>
+        <div><dt>Objeto</dt><dd><a href="{% url 'objetos:detalle' objeto.pk %}" class="enlace">{{ objeto.titulo }}</a> ({{ objeto.get_estado_display }})</dd></div>
+        <div><dt>Sede y lugar</dt><dd>{{ objeto.get_sede_display }} · {{ objeto.lugar }}</dd></div>
+        <div><dt>Dónde está ahora</dt><dd>{{ objeto.get_ubicacion_actual_display|default:"Sin dato" }}</dd></div>
+        {% if reclamacion.reporte_perdida %}
+            <div><dt>Su reporte de pérdida</dt><dd><a href="{% url 'objetos:detalle' reclamacion.reporte_perdida.pk %}" class="enlace">{{ reclamacion.reporte_perdida.titulo }}</a> ({{ reclamacion.reporte_perdida.fecha|date:"d/m/Y" }})</dd></div>
+        {% endif %}
+    </dl>
+
+    <!-- RF-09: comparar la descripción a ciegas con los rasgos registrados -->
+    <div class="comparacion">
+        <section class="comparacion__caja">
+            <h2>Lo que describe el reclamante</h2>
+            <p>{{ reclamacion.descripcion_ciegas|linebreaksbr }}</p>
+            {% if reclamacion.foto_previa %}
+                <img src="{{ reclamacion.foto_previa.url }}" alt="Foto previa enviada por el reclamante" class="comparacion__foto">
+            {% endif %}
+        </section>
+        <section class="comparacion__caja">
+            <h2>Rasgos registrados (privados)</h2>
+            <p>{{ objeto.rasgos_distintivos|default:"Quien lo encontró no registró rasgos distintivos."|linebreaksbr }}</p>
+            {% if objeto.foto_general %}
+                <img src="{{ objeto.foto_general.url }}" alt="Foto del objeto encontrado" class="comparacion__foto">
+            {% endif %}
+        </section>
+    </div>
+
+    {% if reclamacion.esta_pendiente %}
+    <div class="comparacion">
+        <form method="post" action="{% url 'reclamaciones:aprobar' reclamacion.pk %}" class="formulario comparacion__caja" novalidate>
+            {% csrf_token %}
+            <h2>Aprobar y registrar la entrega</h2>
+            <label class="grupo">
+                <span>Persona que recibe *</span>
+                {{ aprobar_form.persona_recibe }}
+                {{ aprobar_form.persona_recibe.errors }}
+            </label>
+            <label class="opcion-casilla">
+                {{ aprobar_form.prueba_fisica }}
+                <span>Se hizo la prueba física (desbloquear, conectar, abrir)</span>
+            </label>
+            <button type="submit" class="boton boton--primario">Aprobar y entregar</button>
+        </form>
+
+        <form method="post" action="{% url 'reclamaciones:rechazar' reclamacion.pk %}" class="formulario comparacion__caja" novalidate>
+            {% csrf_token %}
+            <h2>Rechazar</h2>
+            <label class="grupo">
+                <span>Motivo del rechazo *</span>
+                {{ rechazar_form.motivo }}
+                {{ rechazar_form.motivo.errors }}
+            </label>
+            <button type="submit" class="boton boton--peligro">Rechazar reclamación</button>
+        </form>
+    </div>
+    {% elif reclamacion.estado == 'aprobada' %}
+        <p class="alerta alerta--success">
+            Entregado a {{ reclamacion.entrega.persona_recibe }} el {{ reclamacion.entrega.fecha|date:"d/m/Y H:i" }}.
+            {% if reclamacion.entrega.prueba_fisica %}Se hizo prueba física.{% else %}Sin prueba física.{% endif %}
+        </p>
+    {% else %}
+        <p class="alerta alerta--error">Rechazada. Motivo: {{ reclamacion.motivo_rechazo }}</p>
+    {% endif %}
+</div>
+{% endblock %}

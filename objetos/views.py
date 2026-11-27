@@ -5,10 +5,11 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
+from reclamaciones.models import EstadoReclamacion, Reclamacion
 from usuarios.roles import puede_gestionar
 
 from .forms import ReporteForm
-from .models import Reporte, Sede
+from .models import EstadoReporte, Reporte, Sede
 
 
 def lista(request):
@@ -42,10 +43,19 @@ def lista(request):
 def detalle(request, objeto_id):
     """Detalle de un reporte. Si no existe o está oculto, muestra error 404."""
     objeto = get_object_or_404(Reporte, pk=objeto_id, visible=True)
+    es_autor = request.user.is_authenticated and objeto.autor_id == request.user.id
+    ya_reclamo = request.user.is_authenticated and Reclamacion.objects.filter(
+        reporte=objeto, reclamante=request.user, estado=EstadoReclamacion.PENDIENTE,
+    ).exists()
     contexto = {
         'objeto': objeto,
         # RF-11: solo el autor o Bienestar ven los botones de editar, resolver y eliminar
         'puede_gestionar': puede_gestionar(request.user, objeto),
+        # RF-07: cualquiera menos el autor puede reclamar un objeto encontrado que no se ha devuelto
+        'puede_reclamar': (
+            objeto.es_encontrado and objeto.estado != EstadoReporte.DEVUELTO and not es_autor
+        ),
+        'ya_reclamo': ya_reclamo,
     }
     return render(request, 'objetos/detalle.html', contexto)
 
@@ -120,4 +130,7 @@ def marcar_resuelto(request, objeto_id):
 def mis_reportes(request):
     """Reportes publicados por el usuario que inició sesión (RF-11)."""
     reportes = Reporte.objects.filter(autor=request.user).order_by('-creado')
-    return render(request, 'objetos/mis_reportes.html', {'objetos': reportes})
+    # RF-07: también las reclamaciones que hizo el usuario y en qué van
+    reclamaciones = Reclamacion.objects.filter(reclamante=request.user).select_related('reporte')
+    contexto = {'objetos': reportes, 'reclamaciones': reclamaciones}
+    return render(request, 'objetos/mis_reportes.html', contexto)

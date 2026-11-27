@@ -446,3 +446,69 @@ a { color: inherit; }
 }
 .encabezado-pagina h1 { font-size: 2rem; font-weight: 500; margin: 0; }
 .detalle__acciones form { margin: 0; }
+
+/* ---------- Reclamaciones (RF-07, RF-09) ---------- */
+.filtros-estado { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+
+.tabla-caja { overflow-x: auto; border: 1px solid var(--borde); border-radius: 8px; }
+.tabla { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.tabla th,
+.tabla td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--borde); }
+.tabla th { background: var(--gris); font-weight: 600; font-size: 0.85rem; color: var(--texto-suave); }
+.tabla tbody tr:last-child td { border-bottom: none; }
+.tabla tbody tr:hover { background: var(--gris); }
+
+.estado {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: var(--gris);
+    color: var(--texto-suave);
+}
+.estado--pendiente { background: var(--naranja-claro); color: #a8530b; }
+.estado--aprobada { background: var(--verde-claro); color: var(--verde); }
+.estado--rechazada { background: #fbe9e7; color: #c0392b; }
+
+.comparacion {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    margin: 1.5rem 0;
+}
+.comparacion__caja {
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 1.2rem;
+    background: var(--fondo);
+}
+.comparacion__caja h2 { font-size: 1.1rem; margin: 0 0 0.8rem; }
+.comparacion__foto {
+    display: block;
+    max-width: 100%;
+    max-height: 220px;
+    margin-top: 0.8rem;
+    border-radius: 6px;
+    object-fit: contain;
+}
+.opcion-casilla { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; }
+
+@media (max-width: 760px) {
+    .comparacion { grid-template-columns: 1fr; }
+}
+
+.contador {
+    display: inline-block;
+    min-width: 1.4rem;
+    padding: 0.05rem 0.45rem;
+    margin-left: 0.25rem;
+    border-radius: 999px;
+    background: var(--naranja);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+}
+.seccion-reclamaciones { margin-top: 2.5rem; }
+.seccion-reclamaciones h2 { font-size: 1.4rem; font-weight: 500; margin: 0 0 1rem; }

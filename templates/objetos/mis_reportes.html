@@ -20,5 +20,37 @@
             </div>
         {% endfor %}
     </div>
+
+    {% if reclamaciones %}
+    <section class="seccion-reclamaciones">
+        <h2>Mis reclamaciones</h2>
+        <div class="tabla-caja">
+            <table class="tabla">
+                <thead>
+                    <tr>
+                        <th>Objeto</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reclamacion in reclamaciones %}
+                    <tr>
+                        <td><a href="{% url 'objetos:detalle' reclamacion.reporte.pk %}" class="enlace">{{ reclamacion.reporte.titulo }}</a></td>
+                        <td>{{ reclamacion.fecha|date:"d/m/Y" }}</td>
+                        <td><span class="estado estado--{{ reclamacion.estado }}">{{ reclamacion.get_estado_display }}</span></td>
+                        <td>
+                            {% if reclamacion.estado == 'aprobada' %}Entregado.
+                            {% elif reclamacion.estado == 'rechazada' %}Motivo: {{ reclamacion.motivo_rechazo }}
+                            {% else %}En revisión por Bienestar.{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    {% endif %}
 </div>
 {% endblock %}

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'core',
     'objetos',
     'usuarios',
+    'reclamaciones',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'usuarios.context_processors.roles',
+                'reclamaciones.context_processors.pendientes',
             ],
         },
     },
@@ -145,6 +147,8 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+# Correo (RF-10). En desarrollo los avisos se muestran en la terminal.
+DEFAULT_FROM_EMAIL = 'Encuéntralo <no-responder@campusuninunez.edu.co>'
 
 # Inicio de sesión (RF-01) y sesión de 30 minutos (RNF-04)
 LOGIN_URL = 'usuarios:login'
