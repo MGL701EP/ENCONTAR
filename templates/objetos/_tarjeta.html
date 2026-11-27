@@ -13,6 +13,7 @@
         <p class="tarjeta__dato">Lugar: {{ objeto.lugar }}</p>
         <p class="tarjeta__dato">Sede: {{ objeto.get_sede_display }}</p>
         <p class="tarjeta__dato">Fecha: {{ objeto.fecha|date:"d/m/Y" }}</p>
+        <p class="tarjeta__dato">Estado: {{ objeto.get_estado_display }}</p>
         <a href="{% url 'objetos:detalle' objeto.id %}" class="boton boton--primario boton--chico">Ver más</a>
     </div>
 </article>

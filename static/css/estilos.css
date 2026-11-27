@@ -435,3 +435,14 @@ a { color: inherit; }
 @media (max-width: 760px) {
     .sesion__usuario { display: none; }
 }
+/* ---------- Mis reportes y acciones del detalle ---------- */
+.encabezado-pagina {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.encabezado-pagina h1 { font-size: 2rem; font-weight: 500; margin: 0; }
+.detalle__acciones form { margin: 0; }

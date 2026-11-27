@@ -32,6 +32,9 @@
                 <a href="{% url 'core:inicio' %}" class="menu__enlace {% if pagina == 'inicio' %}activo{% endif %}">Inicio</a>
                 <a href="{% url 'objetos:lista' %}" class="menu__enlace {% if pagina == 'lista' or pagina == 'detalle' %}activo{% endif %}">Objetos</a>
                 <a href="{% url 'objetos:reportar' %}" class="menu__enlace {% if pagina == 'reportar' %}activo{% endif %}">Reportar</a>
+             {% if user.is_authenticated %}
+                <a href="{% url 'objetos:mis_reportes' %}" class="menu__enlace {% if pagina == 'mis_reportes' %}activo{% endif %}">Mis reportes</a>
+              {% endif %}
             </div>
 
             {% if user.is_authenticated %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Mis reportes{% endblock %}
+
+{% block contenido %}
+<div class="contenedor principal--con-margen">
+    <div class="encabezado-pagina">
+        <h1>Mis reportes</h1>
+        <a href="{% url 'objetos:reportar' %}" class="boton boton--primario">+ Nuevo reporte</a>
+    </div>
+
+    <p class="resultado-conteo">{{ objetos|length }} reporte{{ objetos|length|pluralize }}</p>
+    <div class="tarjetas">
+        {% for objeto in objetos %}
+            {% include 'objetos/_tarjeta.html' %}
+        {% empty %}
+            <div class="vacio">
+                <p>Todavía no has publicado reportes.</p>
+                <a href="{% url 'objetos:reportar' %}" class="boton boton--primario">Reportar un objeto</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

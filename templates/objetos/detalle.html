@@ -38,14 +38,26 @@
                 a las dos personas de forma privada.
             </div>
 
-            <button type="button" class="boton boton--primario" data-contactar>
-                {% if objeto.es_encontrado %}Es mío{% else %}Yo lo encontré{% endif %}
-            </button>
+            {% if objeto.estado == 'devuelto' %}
+                <p class="alerta alerta--success">Este caso está resuelto: el objeto ya volvió a su dueño.</p>
+            {% else %}
+                <button type="button" class="boton boton--primario" data-contactar>
+                    {% if objeto.es_encontrado %}Es mío{% else %}Yo lo encontré{% endif %}
+                </button>
+            {% endif %}
             
+            {% if puede_gestionar %}
             <div class="detalle__acciones">
-                <a href="{% url 'objetos:editar' objeto.pk %}" class="boton boton--texto">✏️ Editar</a>
-                <a href="{% url 'objetos:eliminar' objeto.pk %}" class="boton boton--texto boton--texto-peligro">🗑️ Eliminar</a>
+                <a href="{% url 'objetos:editar' objeto.pk %}" class="boton boton--texto">Editar</a>
+                {% if objeto.estado != 'devuelto' %}
+                <form method="post" action="{% url 'objetos:resuelto' objeto.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="boton boton--texto">Marcar como resuelto</button>
+                </form>
+                {% endif %}
+                <a href="{% url 'objetos:eliminar' objeto.pk %}" class="boton boton--texto boton--texto-peligro">Eliminar</a>
             </div>
+            {% endif %}
         </div>
     </article>
 </div>
